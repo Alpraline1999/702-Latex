@@ -1,0 +1,132 @@
+\documentclass[twoside]{article} % 双面打印
+\usepackage{format}
+\title{\myCnTitle}
+\author{\myName}
+\date{\today}
+\addbibresource{references.bib} % 参考文献文件
+
+%***********************************************%
+%                      正文区
+%***********************************************%
+\begin{document}
+
+%***********************************************%
+%                       封面
+%***********************************************%
+\makecover
+\IfSubStr{\myCnTitle}{\\}{%
+  \StrSubstitute{\myCnTitle}{\\}{}[\myCnTitle]
+}{}%
+\newoddpage % 创建新的奇数页
+
+%***********************************************%
+%                       扉页
+%***********************************************%
+\maketitlepage
+% \newoddpage % 创建新的奇数页
+
+%***********************************************%
+%                   博士英文扉页
+%***********************************************%
+\ifodd\myDegreeNumber
+\else
+  \newoddpage % 创建新的奇数页
+  \maketitlepageEn% 博士英文扉页
+  % \newoddpage % 创建新的奇数页
+\fi
+\IfSubStr{\myEnTitle}{\\}{%
+  \StrSubstitute{\myEnTitle}{\\}{}[\myEnTitle]
+}{}%
+
+%***********************************************%
+% 学位论文原创性声明
+%***********************************************%
+\makestatementpage
+\newoddpage % 创建新的奇数页
+
+%***********************************************%
+%                 罗马数字页码区
+%***********************************************%
+\pagestyle{mainstyle} % 页眉页脚格式
+\pagenumbering{Roman} % 页码为大写罗马数字
+\setcounter{total_page}{1} % 总页数计数器初始值
+\setcounter{page}{1} % 页码开始值
+
+% 设置表格行高
+\renewcommand{\arraystretch}{1}
+
+%***********************************************%
+% 摘要
+%***********************************************%
+\newoddpage % 创建新的奇数页
+\include{chapters/abstract} % 添加摘要
+
+%***********************************************%
+% 目次
+%***********************************************%
+\begingroup
+\newoddpage % 创建新的奇数页
+\addtocontents{toc}{\protect\thispagestyle{mainstyle}}
+\phantomsection % 创建锚点用于超链接
+\tableofcontents % 添加目次
+\label{sec:tableofcontents}
+\addcontentsline{toc}{section}{\texorpdfstring{目\quad 次}{目次}} % 添加目次至目次
+\endgroup
+
+%***********************************************%
+% 图目录
+%***********************************************%
+\begingroup
+\newoddpage % 创建新的奇数页
+\addtocontents{lof}{\protect\thispagestyle{mainstyle}}
+\phantomsection % 创建锚点用于超链接
+\listoffigures % 添加图目录
+\label{sec:listoffigures}
+\addcontentsline{toc}{section}{图目录} % 添加图目录至目次
+\endgroup
+
+%***********************************************%
+%                      表目录
+%***********************************************%
+\begingroup
+\newoddpage % 创建新的奇数页
+\addtocontents{lot}{\protect\thispagestyle{mainstyle}}
+\phantomsection % 创建锚点用于超链接
+\listoftables % 添加表目录
+\label{sec:listoftables}
+\addcontentsline{toc}{section}{表目录} % 添加表目录至目次
+\endgroup
+
+%***********************************************%
+%               章节正文（包括总结与展望）
+%***********************************************%
+\newoddpage % 创建新的奇数页
+\pagestyle{mainstyle} % 页眉页脚格式
+\pagenumbering{arabic} % 页码为阿拉伯数字
+\setcounter{page}{1} % 设置页码计数器
+\setcounter{section}{0} % 设置章节计数器
+%***********************************************%
+\input{chapters}
+
+%***********************************************%
+%                     参考文献
+%***********************************************%
+\newoddpage % 创建新的奇数页
+\phantomsection % 创建锚点用于超链接
+\label{sec:bibliography}
+\addcontentsline{toc}{section}{参考文献} % 添加参考文献至目次
+\printbibliography[title=参考文献]
+
+%***********************************************%
+%                       致谢
+%***********************************************%
+\newoddpage % 创建新的奇数页
+\include{chapters/acknowledgements}
+
+%***********************************************%
+%                学术论文和科研成果目录
+%***********************************************%
+\newoddpage % 创建新的奇数页
+\include{chapters/achievements}
+
+\end{document}

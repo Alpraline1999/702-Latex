@@ -1,0 +1,95 @@
+\NeedsTeXFormat{LaTeX2e}
+% 个人信息
+\ProvidesPackage{myinfo}[2025/03/11 Custom Style]
+
+% *********************************************
+%                   设置输出模式  
+% *********************************************
+% 阅读模式/打印模式：(1/2)
+% 阅读模式超链接会显示不同颜色，适合PDF阅读；
+% 打印模式字体为黑色
+\def\myPrintModel{1}
+
+% *********************************************
+%                   设置学位  
+% *********************************************
+% 硕士/博士：(1/2)
+\def\myDegreeNumber{1}
+
+% *********************************************
+%                 设置论文信息 
+% *********************************************
+% 作者姓名 两个字的姓名建议写为：{姓\quad 名}
+\def\myName{杨军城}
+% 论文中文标题
+% 封面中文大标题不超过两行，支持使用\\符号手动换行，
+% 如：{面向波浪-浮体相互作用的\\势粘流耦合方法研究}
+% 会使标题在\\处换行，\\两端不要有空格
+\newcommand{\myCnTitle}{面向波浪-浮体相互作用的\\势粘流耦合方法研究}
+% 论文英文标题
+% 扉页英文标题不超过两行，支持使用\\符号手动换行，
+% 如：{Study on Potential-Viscous Coupling Method \\for Wave-Floating Body Interactions}
+% 会使标题在\\处换行，\\两端不要有多余的空格
+\def\myEnTitle{Study on Potential-Viscous Coupling Method\\for Wave-Floating Body Interactions}
+% 导师信息
+\def\mySupervisorNumber{2} % 导师位数
+\ifodd\mySupervisorNumber
+  % 一位导师
+  \def\mySupervisor{姓\quad 名} % 导师姓名
+  \def\mySupervisorTitle{职\quad 称} % 导师职称
+\else
+  % 两位导师
+  \def\mySupervisorFirst{叶永林} % 导师姓名
+  \def\mySupervisorFirstTitle{研究员} % 导师职称
+  \def\mySupervisorSecond{谢春梅} % 副导师姓名
+  \def\mySupervisorSecondTitle{高级工程师} % 副导师职称
+\fi
+
+% 内封面信息
+\newcounter{myLevelNum}
+\setcounter{myLevelNum}{1} % 密级 公开：1， 内部：2， 秘密：3
+\def\myYears{} % 密级为秘密时的保密年限，其他密级无需填写
+\def\myClass{O352} % 分类号
+\def\myUDC{532} % UDC
+\def\myNumber{S2024-702-03} %论文编号
+
+\def\myMajor{流体力学} % 专业
+\def\myField{船舶计算流体力学} % 研究方向
+
+\def\myDateOut{二〇二四年五月} % 封面日期
+\def\myDateIn{2024年05月} % 扉页日期
+\def\myDateState{2024年05月07日} % 学位论文原创性声明日期
+
+% *********************************************
+%               博士英文扉页内容
+%               硕士无需修改
+% *********************************************
+\ifodd\myDegreeNumber
+\else
+  \def\myNameEn{Zhang San} % Candidate
+  \def\mySupervisorEn{Prof. Li Si} % Supervisor 英文扉页只显示一位导师
+  \def\myMajorEn{My Major, such as Fluid Mechanics} % Major 显示不超过两行
+  \def\myFieldEn{My Research, such as Computational Fluid Dynamics of ship} % 显示不超过三行
+  \def\myDateEn{May 2024} % Submission date
+\fi
+
+% *********************************************
+%               以下内容无需修改
+% *********************************************
+\ifodd\myDegreeNumber
+  \def\myDegree{硕}
+\else
+  \def\myDegree{博}
+\fi
+\ifnum\value{myLevelNum}=1 % 
+  \def\myLevel{公\quad 开}
+  \def\myLevelEn{Unclassified}
+\else
+  \ifnum\value{myLevelNum}=2
+    \def\myLevel{内\quad 部}
+    \def\myLevelEn{Internal}
+  \else
+    \def\myLevel{秘\quad 密}
+    \def\myLevelEn{Classified}
+  \fi
+\fi

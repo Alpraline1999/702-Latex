@@ -1,0 +1,102 @@
+\begin{cnabstract}
+\label{sec:cnabstract}
+
+随着数值方法的不断发展和计算机技术的突飞猛进，
+计算流体力学(Computational Fluid Dynamics，简称CFD)日渐成为研究波浪与结构物相互作用的重要方法之一。
+对于波浪砰击、上浪等波浪与结构物强非线性相互作用问题，
+CFD数值模拟需要耗费巨大的计算资源以精确捕捉大变形自由液面。
+
+本文针对波浪与浮体强非线性相互作用难以高效模拟的难题，
+构建了基于高阶谱方法(High Order Spectral，简称HOS)、
+光滑粒子流体动力学方法(Smoothed Particle Hydrodynamics，简称SPH)
+以及边界元方法(Boundary Element Method，简称BEM)的势粘流多尺度耦合算法，
+在提高计算效率的同时一定程度上降低了数值耗散，实现了基于区域分解的波浪与结构物强非线性相互作用高效数值模拟方法。
+主要研究内容和结论包括：
+
+(1) 实现了基于HOS-SPH的势粘流单向耦合算法：
+利用全非线性势流波浪模型—HOS方法实现波浪的生成和演化，
+并通过开源Grid2Grid模块将势流HOS方法计算得到的波浪场速度和压强传递至SPH粘流域；
+提出了基于网格的粒子流入流出技术以模拟SPH入口边界处粒子的流入流出，
+从而实现了势粘流耦合中的质量传递。
+通过规则波和不规则波、波浪与浮体的相互作用等算例对该方法进行了验证，
+并对耦合区域的主要参数进行了测试。
+计算结果表明同等粒子分辨率下该耦合方法相较于全SPH计算能够有效提高计算效率并一定程度上降低数值耗散。
+
+(2) 实现了基于SPH-BEM的势粘流双向耦合算法：
+针对HOS-SPH单向耦合中耦合边界上的反射波问题，
+利用BEM方法实现了扰动波向外传播的能力，建立了SPH-BEM势粘流双向耦合方法。
+通过规则波和不规则波算例验证了波浪从SPH粘流域向势流域传播的有效性。
+
+(3) 探索了HOS-SPH-BEM势粘流多模型耦合方法：
+结合HOS-SPH单向耦合和SPH-BEM双向耦合，构建了HOS-SPH-BEM势粘流多模型耦合方法。
+通过二维畸形波与三自由度浮体相互作用的算例验证了该方法能够减小耦合边界反射波对计算结果的影响。
+
+本文面向波浪与结构物强非线性相互作用问题，对二维势粘流耦合数值方法展开了探索性研究，
+所实现的势粘流耦合模型在工程应用方面具有一定潜力，将为海洋工程应用提供基础方法支撑。
+
+\par\mbox{}\par % 空行
+\textbf{关键词：}
+波浪结构物相互作用；
+势粘流耦合；
+高阶谱方法；
+光滑粒子流体动力学；
+边界元方法 
+
+\end{cnabstract}
+
+\newoddpage % 创建新的奇数页
+
+\begin{enabstract}
+\label{sec:enabstract}%
+
+With the development of numerical methods and the boom of computer technology, 
+Computational Fluid Dynamics (CFD) has become one of the important methods for study on wave-structure interactions. 
+CFD simulation requires significant computational resources to accurately capture the large-deformed free surface 
+when simulating strongly nonlinear wave-structure problems such as wave slamming, green water, etc.
+
+For the difficulty of efficiently simulating the strongly nonlinear wave–structure interactions, 
+a potential-viscous multi-scale coupling method based on the High Order Spectral (HOS) method, 
+Smooth Particle Hydrodynamics (SPH), and Boundary Element Method (BEM) is proposed in this paper, 
+which can improve the computational efficiency and reduce numerical dissipation. 
+The research content and conclusions are as follows: 
+
+(1) Implemented a unidirectional potential-viscous coupling method based on HOS-SPH: 
+The fully nonlinear wave model (i.e. HOS method) is used to simulate the generation, 
+evolution and propagation of waves, and the velocity and pressure of the potential wave field 
+are transmitted to the SPH viscous domain through the open source Grid2Grid module; 
+A mesh-based particle generation technique is proposed to simulate the inflow/outflow 
+of particles at the inlet boundary of SPH domain, 
+thereby achieving the mass transfer in potential-viscous coupling. 
+This coupling method has been validated through numerical tests of regular and irregular waves, 
+as well as the wave-floating body interaction. 
+The calculation results indicate that at the same particle resolution, 
+the HOS-SPH method can effectively reduce the numerical dissipation 
+and improve computational efficiency compared to full SPH simulation.
+
+(2) Implemented a bidirectional potential-viscous coupling method based on SPH-BEM: 
+In order to solve the reflected wave at the coupling boundary caused by the unidirectional coupling of HOS-SPH, 
+the BEM method was used to achieve the outward propagation of disturbance waves 
+and the SPH-BEM bidirectional potential-viscous coupling method is established. 
+The effectiveness of wave propagation from the SPH viscous domain to the potential domain was verified 
+through numerical tests of regular and irregular waves.
+
+(3) Explored the HOS-SPH-BEM multi-model potential-viscous coupling method: 
+Based on the HOS-SPH unidirectional coupling method and the SPH-BEM bidirectional coupling method, 
+the HOS-SPH-BEM multi-model potential-viscous coupling method is constructed. 
+Through a numerical test of the wave-floating body interaction, 
+it has been verified that this method can reduce the influence of reflected waves at the coupling boundary.
+
+This thesis focuses on the strongly nonlinear wave-structure interaction problems 
+and exploringly studies on the 2D potential-viscous coupling numerical method. 
+The implemented potential-viscous coupling models have potential in engineering applications, 
+which will provide the support of basic methods for marine engineering applications.
+
+\par\mbox{}\par % 空行
+\textbf{Keywords: }
+Wave–structure interactions; 
+Potential-viscous coupling; 
+High Order Spectral; 
+Smoothed Particle Hydrodynamics; 
+Boundary Element Method
+
+\end{enabstract}

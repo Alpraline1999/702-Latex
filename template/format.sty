@@ -1,0 +1,780 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{format}[2024/06/28 Custom Style]
+
+\RequirePackage{ctex} % 支持中文
+\RequirePackage{geometry} % 排版
+\RequirePackage{fontspec} % 使用 fontspec 包来设置字体
+% 数学公式
+\RequirePackage{amsmath,amsfonts,amssymb} % 数学公式
+% \RequirePackage{newtxmath} % 公式字体 Times风格
+\RequirePackage{fourier} % 公式字体 Utopia风格
+\RequirePackage{bm} % 公式粗体
+% 封面和目录
+\RequirePackage{titling} % 封面设计
+\RequirePackage{abstract} % 摘要
+\RequirePackage{tocloft} % 目录
+\RequirePackage{fancyhdr} % 设置页眉页脚
+% 文献引用
+\RequirePackage[%
+  backend=biber,%
+  style=gb7714-2015,% 
+  gbalign=left,% 序号左对齐
+  gbpub=false,% 出版社
+  url=false,% 链接
+  isbn=false,% isbn号
+  doi=true% doi号
+]{biblatex}
+% 图表相关包
+\RequirePackage{array} % 增强表格对齐和排版选项
+\RequirePackage{longtable} % 长表格
+\RequirePackage{booktabs} % 三线表
+\RequirePackage{makecell} % 单元格格式
+\RequirePackage{tabularx} % 定宽表格
+\RequirePackage{multirow} % 合并表格行
+\RequirePackage{float} % 固定图表
+\RequirePackage{graphicx} % 图片插入
+\RequirePackage{caption} % 设置图片题注
+\RequirePackage{subcaption} % 设置子图片题注
+% 其他功能包
+\RequirePackage{xstring} % 字符串处理
+\RequirePackage{calc} % 计算文本宽度
+\RequirePackage{ulem} % 控制下划线
+\RequirePackage{pifont} % 插入勾选框
+\RequirePackage{enumitem} % 列表
+% 章节标题样式
+\RequirePackage{chngcntr} % 更新图表公式编号
+\RequirePackage{titlesec} % 自定义章节标题格式
+% 超链接和交叉引用
+\RequirePackage{hyperref} % 设置引用超链接
+\RequirePackage{cleveref} % 设置交叉引用格式
+\RequirePackage{myinfo} % 设置论文信息
+
+% *********************************************
+%                   设置排版
+% *********************************************
+\geometry{%
+  a4paper, % 使用A4纸张
+  top = 3.2cm, % 上边距
+  bottom = 2cm, % 下边距
+  left = 2.5cm, % 左边距
+  right = 2cm, % 右边距
+  headheight = 14.90433pt, % 页眉高度
+  headsep = 0.7488cm, % 页眉与正文的距离为 2.0cm  =  top - headheight - headsep + topmargin（1pt  =  0.376mm）
+  footskip = 0.8cm, % 页脚与正文的距离为 1.2cm  =  bottom - footskip
+}
+\addtolength{\topmargin}{2.90433pt}
+
+% 使用 \raggedbottom 命令来允许页面底部不对齐
+% 默认情况下是 \flushbottom，即页面底部对齐
+% 这会允许页面之间的内容量稍微不一致，从而避免大块空白
+% \flushbottom
+\raggedbottom
+
+% *********************************************
+%                   设置字体
+% *********************************************
+\setmainfont{Times New Roman} % 设置正文英文字体为 Times New Roman
+\setsansfont{Times New Roman} % 非衬线字体
+\setmonofont{Times New Roman} % 打字机字体，代码字体
+\setlength{\parskip}{0pt} % 段落之间没有额外的间距
+\setCJKmainfont{SimSun}[AutoFakeBold=true]   % 设置主字体为 SimSun，并指定其粗体
+\setCJKsansfont{SimHei}[AutoFakeBold=true]   % 设置无衬线字体为 SimHei，并指定其粗体 \sffamily
+\setCJKmonofont{KaiTi}[AutoFakeBold=true]     % 设置等宽字体为 KaiTi，并指定其粗体 \ttfamily
+
+% 设置normalsize(正文)为：宋体，小四号（12pt），1.25倍行距
+\renewcommand\normalsize{%
+  \fontsize{12pt}{15pt} % 小四号字体大小
+  \selectfont%
+}
+
+%s设置small为：宋体，五号（10.5pt），1.25倍行距
+\renewcommand\small{%
+  \fontsize{10.5pt}{13.125pt} % 五号字体大小
+  \selectfont%
+}
+
+% *********************************************
+%                   设置页眉页脚
+% *********************************************
+% 设置页眉和页脚样式
+\fancyhf{} % 清空当前设置
+\renewcommand{\headrulewidth}{0pt} % 移除默认页眉下划线
+% 设置页眉页脚字体：五号，宋体，单倍行距
+\newcommand{\setheadersize}{\fontsize{10.5pt}{10.5pt}\selectfont}
+
+\newcounter{total_page}
+\AddToHook{shipout/after}{\stepcounter{total_page}}
+
+\fancypagestyle{mainstyle}{%
+  % 设置页眉双下划线
+  \renewcommand\headrule{%
+    \hrule height 0.8pt width\headwidth%
+    \vskip 0.8pt%
+    \hrule height 1.5pt width\headwidth%
+  }%
+  \ifthenelse{\boolean{@twoside}}{
+    % 双面打印
+    % 设置奇偶数页页眉
+    \fancyhead[CO]{\setheadersize 中国舰船研究院\myDegree 士学位论文}%
+    \fancyhead[CE]{\setheadersize \myCnTitle}%
+    % 设置奇偶数页页脚
+    \fancyfoot[RO]{\setheadersize \thepage}%
+    \fancyfoot[LE]{\setheadersize \thepage}%
+  }{
+    % 单面打印
+    % 页眉（动态判断奇偶页）
+    \fancyhead[C]{%
+      \setheadersize
+      \ifodd\value{total_page}
+        中国舰船研究院\myDegree 士学位论文%
+      \else
+        \myCnTitle%
+      \fi
+    }
+    \fancyfoot[C]{\setheadersize \thepage}%
+  }
+}
+
+% *********************************************
+%                   设置创建奇数页
+% *********************************************
+% 创建新的奇数页
+\newcommand{\newoddpage}{%
+  \newpage%
+  \ifthenelse{\boolean{@twoside}}{
+    \unless\ifodd\value{page}%
+      \thispagestyle{empty}%
+      \mbox{}%
+      \newpage%
+    \else
+    \fi
+  }{}
+}
+
+% *********************************************
+%                   设置封面
+% *********************************************
+\newlength{\halflen}
+\newcommand{\mystring}{}
+\newcommand{\mynewstring}{}
+\newlength{\mylen}
+\newlength{\mynewlen}
+\newlength{\myspacelen}
+
+\newcounter{enTitleLines}% 英文标题行数
+\setcounter{enTitleLines}{1}% 默认为1行
+% 绘制下划线
+\newcommand{\widthline}[1]{% 控制下划线长度
+  \renewcommand{\mystring}{#1}%
+  \settowidth{\mylen}{#1}%
+  \setlength{\mynewlen}{\dimexpr \mylen / 2\relax}%
+  \setlength{\myspacelen}{\dimexpr \halflen - \mynewlen \relax}%
+  \renewcommand{\mynewstring}{%
+    \uline{%
+      \phantom{\hspace*{\myspacelen}}%
+      \mystring%
+      \phantom{\hspace*{\myspacelen}}}}%
+  \mynewstring%
+}
+\newlength{\wholelen}% 控制空白部分长度
+\newcommand{\widthspace}[1]{%
+  \renewcommand{\mystring}{#1}%
+  \settowidth{\mylen}{#1}%
+  \setlength{\myspacelen}{\dimexpr \wholelen - \mylen \relax}%
+  \renewcommand{\mynewstring}{\mystring\phantom{\hspace*{\myspacelen}}}%
+  \mynewstring%
+}
+% *********************************************
+%                 设置外封面
+% *********************************************
+\setlength{\tabcolsep}{2pt} % 设置表格单元格边距为2pt
+
+\newcommand{\makecover}{
+  \begin{titlepage}
+    % 顶部信息 宋体四号
+    \newcolumntype{L}{>{\raggedright\arraybackslash \fontsize{14pt}{14pt}\selectfont}b{1.8cm}}
+    \newcolumntype{R}{>{\centering\arraybackslash \fontsize{14pt}{14pt}\selectfont}b{3.7cm}}
+    \renewcommand{\ULthickness}{0.8pt} % 设置下划线的粗细
+    \setlength{\halflen}{52.5pt}
+    \noindent
+    \begin{tabularx}{\textwidth}{L R X L R}
+      \rule{0pt}{0.5cm}%
+      {分类号：}                                   & \widthline{\myClass}                                       %
+                                               &                      & {密\quad 级：} & \widthline{\myLevel}  \\%
+      \rule{0pt}{0.5cm}%
+      {U\hspace*{0.445em}D\hspace*{0.445em}C：} & \widthline{\myUDC}                                         %
+                                               &                      & {编\quad 号：} & \widthline{\myNumber} \\%
+    \end{tabularx}
+    \vspace*{-3em}  % 减少表格和下方文字之间的垂直间距
+
+    % 中国舰船研究院
+    \vspace*{90pt}
+    \par\centering
+    \sffamily % 黑体二号粗体
+    \fontsize{22pt}{44pt}\selectfont
+    \textbf{中\hspace*{0.5em}国\hspace*{0.5em}舰\hspace*{0.5em}船\hspace*{0.5em}研\hspace*{0.5em}究\hspace*{0.5em}院}
+
+    % 硕/博士学位论文
+    \par\centering%
+    \sffamily % 黑体初号粗体
+    \fontsize{42pt}{52.5pt}\selectfont%
+    \textbf{\myDegree\hspace*{0.5em}士\hspace*{0.5em}学\hspace*{0.5em}位\hspace*{0.5em}论\hspace*{0.5em}文}
+
+    % 论文标题
+    \vspace*{60pt}%
+    \par\centering %
+    \sffamily % 黑体二号粗体
+    \fontsize{22pt}{30pt}\selectfont%
+    \textbf{\myCnTitle}%
+
+    % 标题行数影响的空白大小
+    \IfSubStr{\myCnTitle}{\\}{%
+      \vspace*{-39pt}%% 标题手动换行
+    }{%
+      \settowidth{\mylen}{\myCnTitle} %debug
+      \ifthenelse{\lengthtest{\mylen > \textwidth}}{
+        \vspace*{-39pt}%% 标题自动换行
+      }{}
+    }%
+
+    % 作者，指导老师，学科专业
+    \vspace*{60pt}%
+    \par\centering % 黑体/楷体三号粗体
+    \newcolumntype{Z}{>{\centering\arraybackslash \sffamily \bfseries \fontsize{16pt}{16pt}\selectfont}b{3.24cm}}%
+    \newcolumntype{V}{>{\centering\arraybackslash \ttfamily \bfseries \fontsize{16pt}{16pt}\selectfont}b{6.51cm}}%
+    \renewcommand{\ULthickness}{1.0pt} % 设置下划线的粗细%
+    \setlength{\halflen}{88pt}%
+    \setlength\extrarowheight{-0.4cm}%
+    \noindent%
+    \begin{tabular}{Z V}%
+      \rule{0pt}{0.5cm} %
+      {作\qquad 者：} & {\widthline{\myName}}                                            \\
+      \ifodd\mySupervisorNumber% 导师位数
+        \rule{0pt}{0.5cm} %
+      {指导老师：}      & {\widthline{\mySupervisor \quad \mySupervisorTitle}}             \\
+      \else%
+        \rule{0pt}{0.5cm} %
+      {指导老师：}      & {\widthline{\mySupervisorFirst \quad \mySupervisorFirstTitle}}   \\
+      {}           & {\widthline{\mySupervisorSecond \quad \mySupervisorSecondTitle}} \\
+      \fi%
+      \rule{0pt}{0.5cm} %
+      {学科专业：}      & {\widthline{\myMajor}}                                           \\
+      \ifodd\mySupervisorNumber% 导师位数影响的空白大小
+        \rule{0pt}{0.5cm} %
+      {}                                                                              \\
+      \else%
+      \fi%
+    \end{tabular}%
+
+    % 中国船舶科学研究中心
+    \vspace*{90pt}%
+    \par\centering%
+    \sffamily % 黑体小二粗体
+    \fontsize{18pt}{22.5pt}\selectfont %
+    \textbf{中国船舶科学研究中心}%
+
+    % 日期
+    \par\centering%
+    \sffamily % 黑体三号粗体
+    \fontsize{16pt}{30pt}\selectfont %
+    \textbf{\myDateOut} \par%
+  \end{titlepage}%
+}
+% *********************************************
+%                 设置扉页
+% *********************************************
+\newcommand{\maketitlepage}{
+  \begin{titlepage}%
+    % 顶部信息 宋体小四
+    \newcolumntype{L}{>{\raggedright\arraybackslash \normalsize}b{1.38cm}}%
+    \newcolumntype{R}{>{\centering\arraybackslash \normalsize}b{2.85cm}}%
+    \setlength{\halflen}{40pt}%
+    \noindent%
+    \begin{tabularx}{\textwidth}{L R X L R}%
+      \rule{0pt}{0.46cm}%
+      {分类号：}                                   & \widthline{\myClass}                                       %
+                                               &                      & {密\quad 级：} & \widthline{\myLevel}  \\%
+      \rule{0pt}{0.46cm}%
+      {U\hspace*{0.445em}D\hspace*{0.445em}C：} & \widthline{\myUDC}                                         %
+                                               &                      & {编\quad 号：} & \widthline{\myNumber} \\%
+    \end{tabularx}%
+
+    % 硕/博士学位论文
+    \vspace*{92pt}
+    \par\centering
+    \fontsize{22pt}{23pt}\selectfont % 宋体二号粗体
+    \textbf{\myDegree\hspace*{0.25em}士\hspace*{0.25em}学\hspace*{0.25em}位\hspace*{0.25em}论\hspace*{0.25em}文}
+
+    % 论文标题
+    \vspace*{62pt}%
+    \par\centering% 宋体四号
+    \fontsize{14pt}{23pt}\selectfont%
+    {\myCnTitle}%
+    \ifodd\myDegreeNumber% 硕士论文在此显示英文标题
+      \par\centering% Times New Roman 四号
+      {\myEnTitle}%
+      % 英文标题行数影响的空白大小
+      \IfSubStr{\myEnTitle}{\\}{%
+        \setcounter{enTitleLines}{2}%% 标题手动换行
+      }{%
+        \settowidth{\mylen}{\myEnTitle}
+        \ifthenelse{\lengthtest{\mylen > \textwidth}}{
+          \setcounter{enTitleLines}{2}% 标题自动换行
+        }{}
+      }%
+    \fi
+
+    % 英文标题行数影响的空白大小
+    \ifodd\myDegreeNumber
+    \else
+      \setcounter{enTitleLines}{0}% 博士英文标题不在此页显示
+    \fi
+    \ifnum\value{enTitleLines} = 2%
+    \vspace*{-30pt}%
+    \fi%
+
+    % 扉页信息
+    \vspace*{53pt}%
+    \par\raggedright% 宋体四号
+    \newcolumntype{A}{>{\raggedright\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{4cm}}%
+    \newcolumntype{B}{>{\raggedright\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{3cm}}%
+    \newcolumntype{C}{>{\centering\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{3.5cm}}%
+    \newcolumntype{D}{>{\centering\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{2.75cm}}%
+    \setlength\extrarowheight{-0.4cm}%
+    \noindent%
+    \begin{tabular}{A B C D}%
+      \ifodd\mySupervisorNumber% 导师位数
+        \rule{0pt}{0.55cm} %
+        {指\hspace*{0.2em}导\hspace*{0.2em}教\hspace*{0.2em}师\hspace*{0.2em}姓\hspace*{0.2em}名：}%
+                                                     & {\mySupervisor}               & {职\qquad\qquad 称：} & {\mySupervisorTitle}       \\
+      \else%
+        \rule{0pt}{0.55cm} %
+        {指\hspace*{0.2em}导\hspace*{0.2em}教\hspace*{0.2em}师\hspace*{0.2em}姓\hspace*{0.2em}名：}%
+                                                     & {\mySupervisorFirst}          & {职\qquad\qquad 称：} & {\mySupervisorFirstTitle}  \\
+        \rule{0pt}{0.55cm} %
+      {}                                             & {\mySupervisorSecond}         & {职\qquad\qquad 称：} & {\mySupervisorSecondTitle} \\
+      \fi%
+      \rule{0pt}{0.55cm} %
+      {学位申请人姓名：}                                     & {\myName}                     & {申请学位级别：}          & {工学\myDegree 士}            \\
+      \rule{0pt}{0.55cm} %
+      {专\hspace*{1em}业\hspace*{1em}名\hspace*{1em}称：} & \multicolumn{3}{l}{\myMajor}                                                    \\
+      \rule{0pt}{0.55cm} %
+      {研\hspace*{1em}究\hspace*{1em}方\hspace*{1em}向：} & \multicolumn{3}{l}{\myField}                                                    \\
+      \rule{0pt}{0.55cm} %
+      {论\hspace*{0.2em}文\hspace*{0.2em}提\hspace*{0.2em}交\hspace*{0.2em}时\hspace*{0.2em}间：}%
+                                                     & \multicolumn{3}{l}{\myDateIn}                                                   \\
+    \end{tabular}%
+
+    % 英文标题行数影响的空白大小
+    \ifnum\value{enTitleLines} = 0%
+    \vspace*{31.5pt}%
+    \fi%
+
+    % 导师位数影响的空白大小
+    \ifodd\mySupervisorNumber
+      \vspace*{27pt}%
+    \else%
+    \fi%
+
+    % 中国船舶科学研究中心
+    \vspace*{138pt}%
+    \par\raggedright%
+    \fontsize{16pt}{23pt}\selectfont %
+    \hspace*{7em}{培养单位：中国船舶科学研究中心}%
+    \par\raggedright%
+    \fontsize{16pt}{23pt}\selectfont %
+    \hspace*{7em}{学位授予单位：中国舰船研究院}%
+    \par%
+  \end{titlepage}%
+}
+% *********************************************
+%                 设置博士英文封面
+% *********************************************
+\newcommand{\maketitlepageEn}{
+  \begin{titlepage}%
+    % 顶部信息 Times New Roman 四号
+    \newcolumntype{L}{>{\raggedright\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{3.2cm}}%
+    \newcolumntype{O}{>{\centering\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{2.7cm}}%
+    \newcolumntype{R}{>{\centering\arraybackslash \fontsize{14pt}{23pt}\selectfont}b{3.7cm}}%
+    \noindent%
+    \begin{tabularx}{\textwidth}{L O X L R}%
+      \rule{0pt}{0.46cm}%
+      {Classified Index}                      & \setlength{\halflen}{35pt} \widthline{\myClass}                                                                           %
+                                              &                                                 & {Confidentiality} & \setlength{\halflen}{52.5pt} \widthline{\myLevelEn} \\%
+      \rule{0pt}{0.46cm}%
+      {U\hspace*{0.445em}D\hspace*{0.445em}C} & \setlength{\halflen}{35pt} \widthline{\myUDC}                                                                             %
+                                              &                                                 & {Number}          & \setlength{\halflen}{52.5pt} \widthline{\myNumber}  \\%
+    \end{tabularx}%
+
+    % Ph. D. Dissertation
+    \vspace*{92pt}
+    \par\centering
+    \fontsize{22pt}{23pt}\selectfont % Times New Roman二号粗体
+    {Ph. D. Dissertation}
+
+    % 论文标题
+    \vspace*{60pt}%
+    \par\centering% Times New Roman 四号
+    \fontsize{14pt}{23pt}\selectfont%
+    {\myEnTitle}%
+    \IfSubStr{\myEnTitle}{\\}{%
+      \setcounter{enTitleLines}{2}%% 标题手动换行
+    }{%
+      \settowidth{\mylen}{\myEnTitle}
+      \ifthenelse{\lengthtest{\mylen > \textwidth}}{
+        \setcounter{enTitleLines}{2}% 标题自动换行
+      }{}
+    }%
+
+    % 英文标题行数影响的空白大小
+    \ifnum\value{enTitleLines} = 2%
+    \vspace*{-30pt}%
+    \fi%
+
+    % 英文扉页信息
+    \vspace*{60pt}%
+    \par\centering% Times 四号 + 小四号
+    \newcolumntype{Z}{>{\raggedleft\arraybackslash \fontsize{14pt}{23pt}}m{5.5cm}}%
+    \newcolumntype{V}{>{\raggedright\arraybackslash \normalsize \bfseries}m{10cm}}%
+    \noindent%
+    \begin{tabular}{Z V}%
+      \rule{0pt}{0.55cm} %
+      {Candidate: }          & {\myNameEn}       \\
+      \rule{0pt}{0.55cm} %
+      {Supervisor: }         & {\mySupervisorEn} \\
+      \rule{0pt}{0.55cm} %
+      {Major: }              & {\myMajorEn}      \\
+      \rule{0pt}{0.55cm} %
+      {Research Fields: }    & {\myFieldEn}      \\
+      \rule{0pt}{0.55cm} %
+      {Date of Submission: } & {\myDateEn}       \\
+    \end{tabular}%
+
+    \settowidth{\mynewlen}{\myMajorEn}
+    \ifthenelse{\lengthtest{\mynewlen > 10.5cm}}{
+      \vspace*{-19.5pt}%
+    }{}
+    \settowidth{\mynewlen}{\myFieldEn}
+    \ifthenelse{\lengthtest{\mynewlen > 20.5cm}}{
+      \vspace*{-39pt}%
+    }{
+      \ifthenelse{\lengthtest{\mynewlen > 10.5cm}}{
+        \vspace*{-19.5pt}%
+      }{}
+    }
+
+    % China Ship Scientific Research Center
+    \vspace*{138pt}%
+    \par\raggedright% 小三号
+    \fontsize{15pt}{18.75pt}\selectfont %
+    \hspace*{1em}{Training\hspace*{0.2em} Organization: China Ship Scientific Research Center}%
+    \par\raggedright%
+    \fontsize{15pt}{18.75pt}\selectfont %
+    \hspace*{1em}{Degree Awarding Unit: China Ship Research and Development Academy}%
+    \par%
+  \end{titlepage}%
+}
+
+% 学位论文原创性声明
+\newcommand{\cmark}{\ding{52}} % 勾选符号
+\newcommand{\xmark}{\framebox[1.5em][c]{\rule{0pt}{.7em}}} % 未勾选的方框
+\newcommand{\checkedbox}{\framebox[1.5em][c]{\rule{0pt}{.7em}\cmark}} % 勾选的方框
+\setlength{\halflen}{24pt}%
+\setlength{\wholelen}{202pt}%
+\newcommand{\makestatementpage}{%
+  \begin{titlepage}%
+    \par\centering%
+    \fontsize{18pt}{27pt}\selectfont % 宋体二号粗体
+    \textbf{学位论文原创性声明}%
+
+    \vspace*{6pt}%
+    \par\raggedright%
+    \fontsize{12pt}{23pt}\selectfont % 宋体小四号
+    {\qquad 本人郑重声明：本论文所有研究工作，均在导师指导下由作者本人独立完成。%
+      引用的有关观点、方法、数据和文献已在论文中注明，并与参考文献对应。%
+      除论文中已注明引用的内容外，本论文不包含任何其它个人或集体已经公开发表的研究成果。%
+      对本文研究作出任何贡献的个人和集体，均已在论文中以明确方式注明并表示感谢。}%
+
+    \vspace*{56pt}%
+    \par\raggedright\noindent%
+    \fontsize{12pt}{23pt}\selectfont % 宋体小四号
+    {\hspace*{19.5em} 学位论文作者签名：}%
+    \par\raggedright\noindent%
+    {\hspace*{19.5em} 日\qquad 期：\myDateState}%
+
+    % \vspace*{30pt}
+    \newpage
+    \setcounter{page}{1} % 设置页码计数器
+    \thispagestyle{empty}
+    \par\centering
+    \fontsize{18pt}{27pt}\selectfont % 宋体二号粗体
+    \textbf{学位论文版权使用授权声明}
+
+    \vspace*{6pt}%
+    \par\raggedright%
+    \fontsize{12pt}{23pt}\selectfont % 宋体小四号
+    {\qquad 中国舰船研究院和中国船舶科学研究中心有权保存本人呈交的学位论文复印件及电子版，%
+      有权向国家有关部门或机构送交论文复印件及电子版，允许论文被查阅和借阅。%
+      本人授权中国舰船研究院和中国船舶科学研究中心可以将本学位论文的全部或部分内容编入有关数据库进行检索，%
+      可以采用影印、缩印或扫描手段保存或汇编本论文。\\
+      \qquad 本学位论文属于：\\
+      \qquad\qquad 公\hspace*{0.5em}开\quad%
+      \ifnum\value{myLevelNum} = 1%
+      \checkedbox%
+      \else%
+      \xmark%
+      \fi \\%
+      \qquad\qquad 内\hspace*{0.5em}部\quad%
+      \ifnum\value{myLevelNum} = 2%
+      \checkedbox%
+      \else%
+      \xmark%
+      \fi \\%
+      \qquad\qquad 秘\hspace*{0.5em}密\quad%
+      \ifnum\value{myLevelNum} = 3%
+      \checkedbox%
+      \else%
+      \xmark%
+      \fi%
+      \hspace*{5.5em}%
+      在\widthline{\myYears}年解密后适用本授权书。\\
+      \qquad （ 请在以上方框内打“√” ）%
+    }%
+    \vspace*{28pt}%
+    \par%
+    \par\raggedright%
+    \fontsize{12pt}{23pt}\selectfont % 宋体小四号
+    {\qquad 学位论文作者签名：\hspace*{154pt}导师签名：\\
+      \qquad 日\qquad 期：\widthspace{\myDateState}日\qquad 期：\myDateState}
+    \par
+  \end{titlepage}
+}
+% *********************************************
+%                   设置目录格式
+% *********************************************
+% 设置目录标题
+\renewcommand{\cfttoctitlefont}{\hfill\sffamily \fontsize{18pt}{22.5pt}\selectfont} % 黑体小二
+\renewcommand{\cftaftertoctitle}{\hfill} % 设置目录居中
+\renewcommand{\contentsname}{目\quad 次} % 修改目录标题为：目次
+
+\renewcommand{\cftsecfont}{\fontsize{15pt}{20pt}\selectfont} % 一级标题字体：宋体小三
+\renewcommand{\cftsubsecfont}{\fontsize{14pt}{20pt}\selectfont} % 二级标题字体：宋体四号
+\renewcommand{\cftsubsubsecfont}{\normalsize} % 三级标题字体：宋体小四
+
+\renewcommand{\cftsecpagefont}{\normalsize} % 一级标题页码字体
+\renewcommand{\cftsubsecpagefont}{\normalsize} %二级标题页码字体
+\renewcommand{\cftsubsubsecpagefont}{\normalsize} % 三级标题页码字体
+
+\cftsetindents{section}{0em}{4.5em} % 一级标题缩进
+\cftsetindents{subsection}{2em}{2em} % 二级标题缩进
+\cftsetindents{subsubsection}{4em}{2.5em} % 三级标题缩进
+
+\renewcommand{\cftdotsep}{1} % 重新定义点连接的点的大小
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}\normalsize} % 节条目之间用点连接
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}\normalsize} % 节条目之间用点连接
+\renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftdotsep}\normalsize} % 节条目之间用点连接
+
+\setlength{\cftbeforesecskip}{3pt}   % 一级标题之间的垂直间距
+\setlength{\cftbeforesubsecskip}{3pt} % 二级标题之间的垂直间距
+\setlength{\cftbeforesubsubsecskip}{3pt} % 三级标题之间的垂直间距
+
+% 设置图目录的格式
+\renewcommand{\listfigurename}{图目录} % 图目录的标题名称
+\renewcommand{\cftloftitlefont}{\hfill\sffamily \fontsize{12pt}{15pt}\selectfont} % 图目录标题的字体、居中设置
+\renewcommand{\cftafterloftitle}{\hfill} % 图目录标题后面的间距设置
+
+\renewcommand{\cftdotsep}{0.5} % 重新定义点连接的点的大小
+\renewcommand{\cftfigleader}{\cftdotfill{\cftdotsep}} % 图目录的连接线样式
+\renewcommand{\cftfigfont}{\small} % 图目录的字体
+\renewcommand{\cftfigpagefont}{\small} % 图目录的页码字体
+\setlength{\cftbeforefigskip}{0pt} % 图目录条目行间距
+\setlength{\cftfigindent}{0em} % 图目录条目的缩进
+\setlength{\cftfignumwidth}{3.5em} % 图目录条目中编号的宽度
+
+% 设置表目录的格式
+\renewcommand{\listtablename}{表目录} % 表目录的标题名称
+\renewcommand{\cftlottitlefont}{\hfill\sffamily \fontsize{12pt}{15pt}\selectfont} % 图目录标题的字体、居中设置
+\renewcommand{\cftafterlottitle}{\hfill} % 图目录标题后面的间距设置
+
+% % 设置图表目录项的格式
+\renewcommand{\cfttabfont}{\small} % 表的字体
+\renewcommand{\cfttabpagefont}{\small} % 表的页码字体
+\renewcommand{\cfttableader}{\cftdotfill{\cftdotsep}} % 表的连接线样式
+\setlength{\cftbeforetabskip}{0em} % 表目录条目行间距
+\setlength{\cfttabindent}{0em} % 表目录条目的缩进
+\setlength{\cfttabnumwidth}{3.5em} % 表目录条目中编号的宽度
+
+% *********************************************
+%                   设置摘要
+% *********************************************
+% 摘要标题字体
+\newcommand{\cnabstractfont}{\sffamily \fontsize{18pt}{22.5pt}\selectfont}
+\newcommand{\enabstractfont}{\fontsize{18pt}{22.5pt}\selectfont}
+% 摘要标题
+\newcommand{\cnabstractname}{摘\quad 要}
+\newcommand{\enabstractname}{ABSTRACT}
+% 摘要格式
+\newenvironment{cnabstract}{
+  \par%
+  \phantomsection % 创建锚点用于超链接
+  \begin{center}%
+    {\cnabstractfont \cnabstractname}%
+  \end{center}%
+  \addcontentsline{toc}{section}{\texorpdfstring{\cnabstractname}{摘要}} % 添加英文摘要至目次
+  \normalsize % 使用正文字体
+}{\par}
+\newenvironment{enabstract}{%
+  \par%
+  \phantomsection % 创建锚点用于超链接
+  \begin{center}%
+    {\enabstractfont \enabstractname}%
+  \end{center}%
+  \addcontentsline{toc}{section}{\enabstractname} % 添加中文摘要至目次
+  \normalsize % 使用正文字体
+}{\par}
+
+
+% *********************************************
+%                   设置章节标题格式
+% *********************************************
+% 设置章节标题编号
+% 一级标题：第1章
+\renewcommand{\thesection}{第\arabic{section}章}
+% 二级标题：1.1
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+% 三级标题：1.1.1
+\renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+
+% 设置章节标题字体
+% 一级标题：居中，黑体，小二（18pt）% 22.5
+\titleformat{\section}[block]{\centering\sffamily \fontsize{18pt}{22.5pt}\selectfont}{\thesection}{0.5em}{}
+% 二级标题：黑体，小三（15pt）% 18.75
+\titleformat{\subsection}{\sffamily \fontsize{15pt}{18.75pt}\selectfont}{\thesubsection}{0.5em}{}
+% 三级标题，黑体，四号（14pt）% 17.25
+\titleformat{\subsubsection}{\sffamily \fontsize{14pt}{17.5pt}\selectfont}{\thesubsubsection}{0.5em}{}
+
+% 设置章节标题段落间距
+% 一级标题：左缩进0pt，段前6pt，段后6pt
+\titlespacing*{\section}{0pt}{6pt}{6pt}
+% 二级标题：左缩进0pt，段前6pt，段后6pt
+\titlespacing*{\subsection}{0pt}{6pt}{6pt}
+% 三级标题，左缩进0pt，段前0pt，段后0pt
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+
+% *********************************************
+%                   设置图片题注
+% *********************************************
+% 每一章重置图片、表格、公式编号
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+
+% 设置图片题注格式
+\captionsetup[figure]{%
+  font = small, % 设置图片题注字体
+  labelfont = small, % 设置标签字体
+  labelsep = none, % 设置标签和图片题注文本之间的分隔符为空格
+  justification = centering, % 设置图片题注居中对齐
+  singlelinecheck = false, % 设置单行图片题注居中对齐
+  labelformat = simple, % 设置标签为数字
+  skip = 3pt, % 设置标签上方距离
+  belowskip = -15pt, % 设置标签下方距离
+}
+% 设置子图片题注格式
+\captionsetup[subfigure]{%
+  font = small, % 设置图片题注字体
+  labelfont = small, % 设置标签字体
+  labelsep = space, % 设置标签和图片题注文本之间的分隔符为空格
+  justification = centering, % 设置图片题注居中对齐
+  singlelinecheck = false, % 设置单行图片题注居中对齐
+  labelformat = parens, % 设置标签为数字在括号中
+  skip = 2pt, % 设置标签上方距离
+  belowskip = -3pt, % 设置标签下方距离
+}
+
+% 重定义图片题注编号格式
+\renewcommand{\figurename}{}
+\renewcommand{\thefigure}{图\arabic{section}.\arabic{figure}\hspace*{0.25em}} % 整图标签为：图1.1
+\renewcommand{\thesubfigure}{\alph{subfigure}} % 子图标签为：(a)
+
+% 设置图片环境
+\newenvironment{myfigure}[1][!htb]
+{\noindent\begin{figure}[#1]\centering\small}
+    {\end{figure}}
+% *********************************************
+%                   设置表格
+% *********************************************
+% 设置表格题注格式
+\captionsetup[table]{%
+  font = small, % 设置表格题注字体
+  labelfont = small, % 设置标签字体
+  labelsep = none, % 设置标签和表格题注文本之间的分隔符为空格
+  justification = centering, % 设置表格题注居中对齐
+  singlelinecheck = false, % 设置单行表格题注居中对齐
+  labelformat = simple, % 设置标签为数字
+  skip = 5pt, % 设置标签上方距离
+  belowskip = -5pt, % 设置标签下方距离
+}
+
+% 重定义表格题注编号格式
+\renewcommand{\tablename}{}
+\renewcommand{\thetable}{表\arabic{section}.\arabic{table}\hspace*{0.25em}} % 表格标签为：表1.1
+
+% 设置表格行高
+\renewcommand{\arraystretch}{1.25}
+
+% 设置表格环境
+\newenvironment{mytable}[1][htb]
+{\noindent\begin{table}[#1]\centering\small}
+    {\end{table}\vspace*{-10pt}}
+% 设置长表格环境
+\newenvironment{mylongtable}[7]
+{%
+  \par
+  \centering\small
+  \captionof{table}{#2} % 题注
+  \label{#3}
+  \vspace*{-22pt}
+  \begin{longtable}{#1} \\ % 标签
+    #4 % 首页表头
+    \endfirsthead
+    #5 % 后续页表头
+    \endhead
+    #6 % 除最后一页外的表尾
+    \endfoot
+    #7 % 最后一页的表尾
+    \endlastfoot
+    % 表格内容
+    }{%
+  \end{longtable}
+  \addtocounter{table}{-1}
+  \vspace*{-10pt}
+}
+
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}} % \centering -> 水平居中，m -> 垂直居中
+\setlength{\tabcolsep}{2pt} % 设置表格单元格边距为2pt
+% *********************************************
+%                   设置公式
+% *********************************************
+% 编号格式
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+
+% *********************************************
+%                   设置交叉引用格式
+% *********************************************
+\crefformat{table}{#2#1#3}
+\crefformat{figure}{#2#1#3}
+\crefformat{equation}{#2式(#1)\hspace*{0.25em}#3}
+\crefformat{section}{#2#1#3}
+\crefformat{subsection}{#2#1节#3}
+\crefformat{subsubsection}{#2#1小节#3}
+
+\ifodd\myPrintModel
+  \hypersetup{ % 阅读模式超链接颜色
+    colorlinks=true, % 设置链接的颜色
+    linkcolor=blue, % 目录链接颜色
+    citecolor=red, % 引用链接颜色
+    urlcolor=cyan % URL链接颜色
+  }
+\else
+\fi
